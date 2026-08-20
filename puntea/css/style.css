@@ -42,8 +42,6 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   --tabbar-h: 72px;
-  /* Zona segura real del tabbar: su altura + el hueco del gesto del iPhone */
-  --tabbar-safe: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
 }
 
 *{ box-sizing: border-box; }
@@ -54,10 +52,7 @@ body{
   color: var(--ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
-  /* FIX: hueco de sobra al final del formulario para que el botón
-     "Guardar visita" (último elemento) quede claramente por encima
-     del tabbar fijo, sin quedar pegado ni tapado por él. */
-  padding-bottom: calc(var(--tabbar-safe) + 48px);
+  padding-bottom: calc(var(--tabbar-h) + 18px);
 }
 h1,h2,h3{ font-family: var(--font-display); margin:0; letter-spacing:-0.01em; }
 p{ margin:0; }
@@ -78,48 +73,38 @@ button{ font-family: inherit; }
   padding: 16px 18px 12px;
   background: linear-gradient(to bottom, var(--paper) 82%, transparent);
 }
-
 .brand{
   display:flex; align-items:center; gap:9px;
-  font-size: 0; /* Oculta cualquier texto residual de forma limpia */
-  position: relative;
-  text-decoration: none;
+  font-family: var(--font-display); font-weight:700; font-size: 19px;
+  color: var(--ink);
 }
-
-/* Oculta los círculos de la animación anterior para dejar espacio al logo principal */
-.brand .tap span{
-  display: none !important;
+.brand-logo{
+  display:block; border-radius: 7px; flex: none;
 }
-
 .brand .tap{
-  position: relative;
-  width: auto;
-  height: auto;
+  position:relative; width:20px; height:20px; flex:none;
 }
-
-/* Integración elegante del logo en lugar de NombreEmpresa */
-.brand::before{
-  content: "";
-  display: inline-block;
-  width: 52px;              /* Un poco más grande para destacar elegante */
-  height: 52px;
-  background-image: url('logo.png'); /* Asegúrate de que tu imagen se llame logo.png */
-  background-size: cover;
-  background-position: center;
-  border-radius: var(--radius-sm); /* Usa tus mismas esquinas redondeadas del diseño */
-  box-shadow: var(--shadow); /* Usa la misma sombra suave de tu app */
-  transition: transform 0.15s ease;
+.brand .tap span{
+  position:absolute; inset:0; border-radius:50%;
+  border:2px solid var(--brand);
 }
-
-.brand:active::before{
-  transform: scale(0.96);
+.brand .tap span:nth-child(1){ inset:6px; background: var(--brand); border:none; }
+.brand .tap span:nth-child(2){ animation: ping 2.2s ease-out infinite; }
+.brand .tap span:nth-child(3){ inset:-3px; opacity:.45; animation: ping 2.2s ease-out .5s infinite; }
+@keyframes ping{
+  0%{ transform: scale(.55); opacity:.9; }
+  80%{ transform: scale(1.15); opacity:0; }
+  100%{ opacity:0; }
 }
-
+@media (prefers-reduced-motion: reduce){
+  .brand .tap span{ animation: none !important; }
+}
 .header-tag{
   font-family: var(--font-mono); font-size: 11.5px; color: var(--muted);
   background: var(--paper-raised); border:1px solid var(--line);
   padding: 5px 9px; border-radius: 999px;
 }
+
 /* ---------- Layout ---------- */
 .screen{ max-width: 640px; margin: 0 auto; padding: 4px 16px 24px; }
 .section-title{
@@ -169,30 +154,12 @@ legend{ padding:0; }
   border-radius: var(--radius-sm);
   padding: 14px 16px;
   transition: transform .08s ease;
-  /* FIX: evita el retraso de ~300ms del navegador antes de
-     registrar el toque, y quita el resaltado gris al pulsar en Android */
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 .btn:active{ transform: scale(.97); box-shadow: var(--shadow-press); }
 .btn-block{ width:100%; }
 .btn-primary{ background: var(--brand); color:#fff; }
 .btn-ghost{ background: var(--paper-raised); color: var(--ink); border:1.5px solid var(--line); }
 .btn-sm{ padding: 9px 12px; font-size: 13px; border-radius: 999px; }
-
-/* FIX: "sticky" en vez de estático o fijo. El botón se comporta como
-   un elemento normal mientras rellenas el formulario (no tapa nada
-   por encima), pero en cuanto llegas a él haciendo scroll, se queda
-   pegado y visible justo encima del tabbar, sin cortarse ni ocultarse. */
-#submit-btn{
-  position: sticky;
-  bottom: calc(var(--tabbar-safe) + 16px);
-  width: 100%;
-  min-height: 60px;
-  font-size: 16.5px;
-  margin-top: 6px;
-  box-shadow: 0 -6px 18px rgba(20,23,28,.18);
-}
 
 /* Botones grandes de resultado de visita */
 .result-grid{
@@ -206,8 +173,6 @@ legend{ padding:0; }
   display:flex; flex-direction:column; justify-content:center; gap:4px;
   font-family: var(--font-body); font-weight:700; font-size: 14.5px; color: var(--ink);
   transition: all .12s ease;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 .result-btn .emoji{ font-size: 20px; }
 .result-btn.active{ transform: scale(.98); }
@@ -224,7 +189,6 @@ legend{ padding:0; }
   padding: 13px; border-radius: var(--radius-sm);
   border: 2px solid var(--line); background: var(--paper-raised);
   font-weight:700; font-family: var(--font-display);
-  touch-action: manipulation;
 }
 .chip.active{ border-color: var(--brand); background: var(--brand-soft); color: var(--brand-ink); }
 
@@ -241,8 +205,6 @@ legend{ padding:0; }
   flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
   gap:3px; text-decoration:none; color: var(--muted);
   font-size: 11.5px; font-weight:600;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
 }
 .tab .ic{ width:23px; height:23px; }
 .tab.active{ color: var(--brand); }
@@ -304,7 +266,7 @@ legend{ padding:0; }
 @keyframes shimmer{ 0%{background-position:100% 0} 100%{background-position:0 0} }
 
 .toast{
-  position: fixed; left:16px; right:16px; bottom: calc(var(--tabbar-safe) + 14px);
+  position: fixed; left:16px; right:16px; bottom: calc(var(--tabbar-h) + 14px);
   z-index: 50; background: var(--ink); color:#fff;
   padding: 13px 16px; border-radius: var(--radius-sm);
   font-size: 14px; font-weight:600; text-align:center;
