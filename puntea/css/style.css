@@ -101,13 +101,13 @@ button{ font-family: inherit; }
 .brand::before{
   content: "";
   display: inline-block;
-  width: 38px;
-  height: 38px;
-  background-image: url('logo.png'); /* Asegúrate de que el archivo del logo se llame logo.png o cambia la ruta aquí */
+  width: 52px;              /* Un poco más grande para destacar elegante */
+  height: 52px;
+  background-image: url('logo.png'); /* Asegúrate de que tu imagen se llame logo.png */
   background-size: cover;
   background-position: center;
-  border-radius: 9px;
-  box-shadow: 0 2px 8px rgba(20, 23, 28, 0.12);
+  border-radius: var(--radius-sm); /* Usa tus mismas esquinas redondeadas del diseño */
+  box-shadow: var(--shadow); /* Usa la misma sombra suave de tu app */
   transition: transform 0.15s ease;
 }
 
