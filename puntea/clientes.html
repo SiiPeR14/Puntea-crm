@@ -165,10 +165,6 @@ function abrirDetalle(c) {
     <div class="kv"><span class="k">Teléfono</span><span class="v">${c.Telefono || "—"}</span></div>
     <div class="kv"><span class="k">Email</span><span class="v">${c.Email || "—"}</span></div>
     ${c.GoogleMapsLink ? `<div class="kv"><span class="k">Google</span><span class="v"><a href="${c.GoogleMapsLink}" target="_blank">Ver perfil ↗</a></span></div>` : ""}
-    ${c.FotoURL ? `
-      <div class="section-title">Foto de la venta</div>
-      <a href="${c.FotoURL}" target="_blank"><img src="${c.FotoURL}" class="foto-thumb" style="width:100%; height:180px;" alt="Foto de la venta"></a>
-    ` : ""}
 
     <div class="field" style="margin-top:14px;">
       <label for="notas-edit">Notas para futuros seguimientos</label>
