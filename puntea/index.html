@@ -221,4 +221,31 @@ window.location.href = 'login.html';
 <script src="js/ui.js"></script>
 <script src="js/registrar.js"></script>
 </body>
+  <!-- Botón de Logout -->
+<div style="padding: 16px; text-align: center; background: #f5f5f5; border-top: 1px solid #ddd;">
+    <button onclick="cerrarSesion()" style="
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+    ">
+        🚪 Cerrar Sesión
+    </button>
+</div>
+
+<script>
+function cerrarSesion() {
+    if (confirm('¿Seguro que quieres cerrar sesión?')) {
+        firebase.auth().signOut().then(() => {
+            window.location.href = 'login.html';
+        }).catch((error) => {
+            alert('Error al cerrar sesión: ' + error.message);
+        });
+    }
+}
+</script>
 </html>
