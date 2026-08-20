@@ -14,6 +14,28 @@
 <meta name="apple-mobile-web-app-title" content="Puntea">
 <link rel="stylesheet" href="css/style.css">
 </head>
+    <!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyDYXO11YfyNMvQI-4xj_8Kn2IXsWM6Olk",
+        authDomain: "puntea-805f1.firebaseapp.com",
+        projectId: "puntea-805f1",
+        storageBucket: "puntea-805f1.firebasestorage.app",
+        messagingSenderId: "1072832380004",
+        appId: "1:1072832380004:web:d50955d36f1ad9bb213371"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    // Verificar que es admin antes de cargar la página
+    requireAdmin().catch(() => {
+        // La redirección ya se hace en requireAdmin()
+    });
+</script>
 <body>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
