@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Puntea — Registrar visita</title>
+<link rel="icon" href="data:,">
+<meta name="theme-color" content="#2F5CED">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Puntea">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="tap"><span></span><span></span><span></span></span>Puntea</div>
+  <div class="header-tag" id="clock">--:--</div>
+</header>
+
+<main class="screen">
+  <div id="config-banner"></div>
+
+  <form id="visita-form">
+
+    <div class="section-title">Comercial</div>
+    <div class="card">
+      <div class="chip-select" id="comercial-select"></div>
+    </div>
+
+    <div class="section-title">Datos del negocio</div>
+    <div class="card">
+      <div class="field">
+        <label for="nombreNegocio">Nombre del negocio *</label>
+        <input type="text" id="nombreNegocio" required placeholder="Ej. Cafetería Roma">
+      </div>
+      <div class="field">
+        <label for="tipoNegocio">Tipo de negocio</label>
+        <select id="tipoNegocio">
+          <option value="">Selecciona...</option>
+          <option>Restaurante</option>
+          <option>Bar / Cafetería</option>
+          <option>Clínica / Salud</option>
+          <option>Tienda</option>
+          <option>Peluquería / Estética</option>
+          <option>Hotel / Alojamiento</option>
+          <option>Gimnasio</option>
+          <option>Automoción / Taller</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" placeholder="Calle, número, ciudad">
+      </div>
+      <div class="field">
+        <label for="googleMapsLink">Enlace de Google Maps / perfil de Google</label>
+        <input type="url" id="googleMapsLink" placeholder="https://maps.google.com/...">
+      </div>
+    </div>
+
+    <div class="section-title">Persona de contacto</div>
+    <div class="card">
+      <div class="row2">
+        <div class="field">
+          <label for="personaContacto">Nombre</label>
+          <input type="text" id="personaContacto">
+        </div>
+        <div class="field">
+          <label for="cargo">Cargo</label>
+          <input type="text" id="cargo" placeholder="Encargado, dueño...">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="telefono">Teléfono</label>
+          <input type="tel" id="telefono">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email">
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Datos de la visita</div>
+    <div class="card">
+      <div class="row2">
+        <div class="field">
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha">
+        </div>
+        <div class="field">
+          <label for="horaLlegada">Hora de llegada</label>
+          <input type="time" id="horaLlegada">
+        </div>
+      </div>
+      <div class="field">
+        <label for="horaSalida">Hora de salida</label>
+        <input type="time" id="horaSalida">
+        <p class="hint" id="duracion-hint">La duración se calcula automáticamente.</p>
+      </div>
+    </div>
+
+    <div class="section-title">Resultado de la visita</div>
+    <div class="card">
+      <div class="result-grid" id="resultado-grid"></div>
+      <input type="hidden" id="resultado" required>
+    </div>
+
+    <div id="venta-fields" style="display:none">
+      <div class="section-title">Detalle de la venta</div>
+      <div class="card">
+        <div class="row2">
+          <div class="field">
+            <label for="numTarjetas">Nº de tarjetas vendidas</label>
+            <input type="number" id="numTarjetas" min="0" inputmode="numeric">
+          </div>
+          <div class="field">
+            <label for="importe">Importe (€)</label>
+            <input type="number" id="importe" min="0" step="0.01" inputmode="decimal">
+          </div>
+        </div>
+        <div class="field">
+          <label for="formaPago">Forma de pago</label>
+          <select id="formaPago">
+            <option value="">Selecciona...</option>
+            <option>Efectivo</option>
+            <option>Tarjeta</option>
+            <option>Bizum</option>
+            <option>Transferencia</option>
+            <option>Pendiente de pago</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Conversación</div>
+    <div class="card">
+      <div class="field">
+        <label for="notas">Notas de la conversación</label>
+        <textarea id="notas" placeholder="Qué se ha hablado, contexto del negocio..."></textarea>
+      </div>
+      <div class="field">
+        <label for="objeciones">Objeciones del cliente</label>
+        <textarea id="objeciones" placeholder="Precio, no lo ve necesario, ya usan otra cosa..."></textarea>
+      </div>
+    </div>
+
+    <div class="section-title">Seguimiento</div>
+    <div class="card">
+      <div class="field">
+        <label for="proximaAccion">Próxima acción</label>
+        <input type="text" id="proximaAccion" placeholder="Llamar, volver a pasar, enviar info...">
+      </div>
+      <div class="field">
+        <label for="fechaSeguimiento">Fecha de seguimiento</label>
+        <input type="date" id="fechaSeguimiento">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" id="submit-btn" style="margin-top:6px; padding:16px;">
+      Guardar visita
+    </button>
+  </form>
+</main>
+
+<nav class="tabbar">
+  <a class="tab active" href="index.html">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    Registrar
+  </a>
+  <a class="tab" href="visitas.html">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+    Visitas
+  </a>
+  <a class="tab" href="clientes.html">
+    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.2"/><path d="M4.5 20c1.4-3.6 4.2-5.5 7.5-5.5s6.1 1.9 7.5 5.5"/></svg>
+    Clientes
+  </a>
+</nav>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/registrar.js"></script>
+</body>
+</html>

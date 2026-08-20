@@ -1,0 +1,115 @@
+// ===========================================================
+// PUNTEA — Listado de visitas
+// ===========================================================
+
+renderConfigBanner("config-banner");
+
+let allVisitas = [];
+let filtroActivo = "todas";
+
+async function cargarVisitas() {
+  const listCard = document.getElementById("list-card");
+  if (!Api.isConfigured()) {
+    listCard.innerHTML = `<div class="empty">Conecta Google Sheets para ver las visitas.</div>`;
+    return;
+  }
+  try {
+    allVisitas = await Api.listVisitas();
+    document.getElementById("count-tag").textContent = allVisitas.length + " visitas";
+    render();
+  } catch (err) {
+    listCard.innerHTML = `<div class="empty">Error al cargar: ${err.message}</div>`;
+  }
+}
+
+function aplicaFiltro(list) {
+  if (filtroActivo === "todas") return list;
+  if (filtroActivo === "hoy") return list.filter((v) => v.Fecha === todayISO());
+  if (filtroActivo === "Adam" || filtroActivo === "Sergi") {
+    return list.filter((v) => v.Comercial === filtroActivo);
+  }
+  return list.filter((v) => v.Resultado === filtroActivo);
+}
+
+function render() {
+  const listCard = document.getElementById("list-card");
+  const visibles = aplicaFiltro(allVisitas);
+
+  if (visibles.length === 0) {
+    listCard.innerHTML = `<div class="empty">No hay visitas con este filtro todavía.</div>`;
+    return;
+  }
+
+  listCard.innerHTML = visibles
+    .map((v, i) => `
+      <div class="visit-item" data-i="${allVisitas.indexOf(v)}">
+        <div style="flex:1; min-width:0;">
+          <div class="visit-name">${escapeHtml(v.NombreNegocio || "Sin nombre")}</div>
+          <div class="visit-meta">
+            <span>${fmtDate(v.Fecha)}</span>
+            <span>${v.Comercial || "—"}</span>
+            <span>${v.DuracionMin ? v.DuracionMin + " min" : "—"}</span>
+          </div>
+        </div>
+        ${badgeForResultado(v.Resultado)}
+      </div>
+    `)
+    .join("");
+
+  [...listCard.querySelectorAll(".visit-item")].forEach((el) => {
+    el.style.cursor = "pointer";
+    el.onclick = () => abrirDetalle(allVisitas[Number(el.dataset.i)]);
+  });
+}
+
+function abrirDetalle(v) {
+  const modalBg = document.getElementById("modal-bg");
+  const modal = document.getElementById("modal-content");
+  modal.innerHTML = `
+    <div class="modal-head">
+      <h3>${escapeHtml(v.NombreNegocio || "Visita")}</h3>
+      <button class="modal-close" id="modal-close">&times;</button>
+    </div>
+    ${badgeForResultado(v.Resultado)}
+    <div style="height:12px"></div>
+    <div class="kv"><span class="k">Comercial</span><span class="v">${v.Comercial || "—"}</span></div>
+    <div class="kv"><span class="k">Fecha</span><span class="v">${v.Fecha || "—"}</span></div>
+    <div class="kv"><span class="k">Horario</span><span class="v">${v.HoraLlegada || "—"} → ${v.HoraSalida || "—"}</span></div>
+    <div class="kv"><span class="k">Duración</span><span class="v">${v.DuracionMin ? v.DuracionMin + " min" : "—"}</span></div>
+    <div class="kv"><span class="k">Dirección</span><span class="v">${escapeHtml(v.Direccion || "—")}</span></div>
+    <div class="kv"><span class="k">Tipo</span><span class="v">${v.TipoNegocio || "—"}</span></div>
+    <div class="kv"><span class="k">Contacto</span><span class="v">${escapeHtml(v.PersonaContacto || "—")} ${v.Cargo ? "(" + v.Cargo + ")" : ""}</span></div>
+    <div class="kv"><span class="k">Teléfono</span><span class="v">${v.Telefono || "—"}</span></div>
+    <div class="kv"><span class="k">Email</span><span class="v">${v.Email || "—"}</span></div>
+    ${v.GoogleMapsLink ? `<div class="kv"><span class="k">Google</span><span class="v"><a href="${v.GoogleMapsLink}" target="_blank">Ver perfil ↗</a></span></div>` : ""}
+    ${v.Resultado === "Venta cerrada" ? `
+      <div class="kv"><span class="k">Tarjetas</span><span class="v">${v.NumTarjetas || "—"}</span></div>
+      <div class="kv"><span class="k">Importe</span><span class="v">${fmtMoney(v.Importe)}</span></div>
+      <div class="kv"><span class="k">Pago</span><span class="v">${v.FormaPago || "—"}</span></div>
+    ` : ""}
+    ${v.Notas ? `<div class="section-title">Notas</div><p style="font-size:14px; line-height:1.5;">${escapeHtml(v.Notas)}</p>` : ""}
+    ${v.Objeciones ? `<div class="section-title">Objeciones</div><p style="font-size:14px; line-height:1.5;">${escapeHtml(v.Objeciones)}</p>` : ""}
+    ${v.ProximaAccion || v.FechaSeguimiento ? `
+      <div class="section-title">Seguimiento</div>
+      <div class="kv"><span class="k">Próxima acción</span><span class="v">${escapeHtml(v.ProximaAccion || "—")}</span></div>
+      <div class="kv"><span class="k">Fecha</span><span class="v">${v.FechaSeguimiento || "—"}</span></div>
+    ` : ""}
+  `;
+  modalBg.classList.add("show");
+  document.getElementById("modal-close").onclick = () => modalBg.classList.remove("show");
+  modalBg.onclick = (e) => { if (e.target === modalBg) modalBg.classList.remove("show"); };
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+[...document.querySelectorAll(".filter-chip")].forEach((chip) => {
+  chip.onclick = () => {
+    filtroActivo = chip.dataset.f;
+    [...document.querySelectorAll(".filter-chip")].forEach((c) => c.classList.toggle("active", c === chip));
+    render();
+  };
+});
+
+cargarVisitas();
