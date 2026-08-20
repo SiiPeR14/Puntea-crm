@@ -167,15 +167,18 @@ legend{ padding:0; }
 .btn-ghost{ background: var(--paper-raised); color: var(--ink); border:1.5px solid var(--line); }
 .btn-sm{ padding: 9px 12px; font-size: 13px; border-radius: 999px; }
 
-/* FIX: el botón vuelve al flujo normal del documento, justo debajo
-   de la sección "Seguimiento" (ya NO flota encima de los campos
-   mientras se hace scroll). El padding-bottom del body (más arriba)
-   deja hueco de sobra para que quede claramente por encima del tabbar. */
+/* FIX: "sticky" en vez de estático o fijo. El botón se comporta como
+   un elemento normal mientras rellenas el formulario (no tapa nada
+   por encima), pero en cuanto llegas a él haciendo scroll, se queda
+   pegado y visible justo encima del tabbar, sin cortarse ni ocultarse. */
 #submit-btn{
+  position: sticky;
+  bottom: calc(var(--tabbar-safe) + 16px);
   width: 100%;
   min-height: 60px;
   font-size: 16.5px;
   margin-top: 6px;
+  box-shadow: 0 -6px 18px rgba(20,23,28,.18);
 }
 
 /* Botones grandes de resultado de visita */
