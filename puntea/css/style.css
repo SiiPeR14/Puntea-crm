@@ -54,10 +54,10 @@ body{
   color: var(--ink);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
-  /* FIX: el botón de guardar ahora es una barra fija (ver #submit-btn
-     más abajo), así que dejamos hueco de sobra al final del contenido
-     para que ninguna tarjeta quede oculta detrás de esa barra + el tabbar. */
-  padding-bottom: calc(var(--tabbar-safe) + 100px);
+  /* FIX: hueco de sobra al final del formulario para que el botón
+     "Guardar visita" (último elemento) quede claramente por encima
+     del tabbar fijo, sin quedar pegado ni tapado por él. */
+  padding-bottom: calc(var(--tabbar-safe) + 48px);
 }
 h1,h2,h3{ font-family: var(--font-display); margin:0; letter-spacing:-0.01em; }
 p{ margin:0; }
@@ -167,21 +167,15 @@ legend{ padding:0; }
 .btn-ghost{ background: var(--paper-raised); color: var(--ink); border:1.5px solid var(--line); }
 .btn-sm{ padding: 9px 12px; font-size: 13px; border-radius: 999px; }
 
-/* FIX: el botón de guardar ya NO va dentro del flujo normal del
-   formulario. Se queda fijo, flotando siempre entero justo encima
-   del tabbar, para que nunca haya que hacer scroll para verlo ni
-   tocarlo "a medias". */
+/* FIX: el botón vuelve al flujo normal del documento, justo debajo
+   de la sección "Seguimiento" (ya NO flota encima de los campos
+   mientras se hace scroll). El padding-bottom del body (más arriba)
+   deja hueco de sobra para que quede claramente por encima del tabbar. */
 #submit-btn{
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: calc(var(--tabbar-safe) + 28px);
-  width: calc(100% - 32px);
-  max-width: 608px; /* 640px del .screen menos 16px de margen a cada lado */
+  width: 100%;
   min-height: 60px;
   font-size: 16.5px;
-  z-index: 25;
-  box-shadow: 0 -6px 18px rgba(20,23,28,.18);
+  margin-top: 6px;
 }
 
 /* Botones grandes de resultado de visita */
