@@ -25,13 +25,13 @@ const HEADERS = {
     "NombreNegocio", "Direccion", "TipoNegocio", "PersonaContacto", "Cargo",
     "Telefono", "Email", "GoogleMapsLink", "Resultado", "NumTarjetas",
     "Importe", "FormaPago", "Notas", "Objeciones", "ProximaAccion",
-    "FechaSeguimiento", "ClienteID", "FotoURL", "CreatedAt"
+    "FechaSeguimiento", "ClienteID", "CreatedAt"
   ],
   [SHEET_CLIENTES]: [
     "ID", "NombreNegocio", "Direccion", "TipoNegocio", "PersonaContacto",
     "Cargo", "Telefono", "Email", "GoogleMapsLink", "FechaVenta",
     "ImporteTotal", "NumTarjetas", "Comercial", "Estado", "Notas",
-    "VisitaID", "FotoURL", "CreatedAt"
+    "VisitaID", "CreatedAt"
   ],
   [SHEET_SEGUIMIENTOS]: [
     "ID", "ClienteID", "Fecha", "Tipo", "Descripcion", "Estado", "CreatedAt"
@@ -99,38 +99,6 @@ function updateRowById_(sheet, id, patch) {
 
 function newId_(prefix) {
   return prefix + "_" + Utilities.getUuid().slice(0, 8);
-}
-
-// -----------------------------------------------------------
-// Fotos de venta (Google Drive)
-// -----------------------------------------------------------
-
-const FOTOS_FOLDER_NAME = "Puntea - Fotos de ventas";
-
-function getFotosFolder_() {
-  const it = DriveApp.getFoldersByName(FOTOS_FOLDER_NAME);
-  if (it.hasNext()) return it.next();
-  return DriveApp.createFolder(FOTOS_FOLDER_NAME);
-}
-
-// Recibe un data URL ("data:image/jpeg;base64,....") y devuelve
-// la URL pública (ver con enlace) del archivo subido a Drive.
-function subirFotoVenta_(dataUrl, nombreBase) {
-  if (!dataUrl) return "";
-  const match = String(dataUrl).match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-  if (!match) throw new Error("Formato de foto no válido");
-  const mimeType = match[1];
-  const base64Data = match[2];
-  const ext = mimeType.split("/")[1] || "jpg";
-
-  const bytes = Utilities.base64Decode(base64Data);
-  const blob = Utilities.newBlob(bytes, mimeType, nombreBase + "." + ext);
-
-  const folder = getFotosFolder_();
-  const file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-
-  return "https://drive.google.com/uc?id=" + file.getId();
 }
 
 function todayStr_() {
@@ -222,14 +190,9 @@ function addVisita_(data) {
   const createdAt = nowIso_();
   const duracion = duracionMin_(data.HoraLlegada, data.HoraSalida);
 
-  let fotoUrl = "";
-  if (data.FotoBase64) {
-    fotoUrl = subirFotoVenta_(data.FotoBase64, id);
-  }
-
   let clienteId = "";
   if (data.Resultado === "Venta cerrada") {
-    clienteId = crearClienteDesdeVisita_(data, id, fotoUrl);
+    clienteId = crearClienteDesdeVisita_(data, id);
   }
 
   const visita = {
@@ -256,7 +219,6 @@ function addVisita_(data) {
     ProximaAccion: data.ProximaAccion || "",
     FechaSeguimiento: data.FechaSeguimiento || "",
     ClienteID: clienteId,
-    FotoURL: fotoUrl,
     CreatedAt: createdAt,
   };
 
@@ -264,7 +226,7 @@ function addVisita_(data) {
   return visita;
 }
 
-function crearClienteDesdeVisita_(data, visitaId, fotoUrl) {
+function crearClienteDesdeVisita_(data, visitaId) {
   const sheet = getSheet_(SHEET_CLIENTES);
   const id = newId_("C");
   const cliente = {
@@ -284,7 +246,6 @@ function crearClienteDesdeVisita_(data, visitaId, fotoUrl) {
     Estado: "Activo",
     Notas: data.Notas || "",
     VisitaID: visitaId,
-    FotoURL: fotoUrl || "",
     CreatedAt: nowIso_(),
   };
   appendObject_(sheet, cliente);
