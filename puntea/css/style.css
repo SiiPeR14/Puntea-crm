@@ -82,10 +82,33 @@ button{ font-family: inherit; }
   display:flex; align-items:center; gap:9px;
   font-family: var(--font-display); font-weight:700; font-size: 19px;
   color: var(--ink);
+  /* Oculta el texto original "Puntea" */
+  visibility: hidden;
+  position: relative;
 }
+/* Inserta el nuevo nombre */
+.brand::after{
+  content: "NombreEmpresa"; /* <-- TU NUEVO NOMBRE AQUÍ */
+  visibility: visible;
+  font-family: var(--font-display); font-weight:700; font-size: 19px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Adaptación del logo */
 .brand .tap{
-  position:relative; width:20px; height:20px; flex:none;
+  position:absolute; width: 28px; height: 28px; flex:none;
+  visibility: visible; /* Asegura que el logo sea visible */
+  margin-top: -1px; /* Ajuste fino de alineación vertical */
+  
+  /* Carga del logo de la empresa */
+  background-image: url('logo_puntea.png'); /* Reemplaza por la ruta de tu logo */
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
+/* Animación del logo */
 .brand .tap span{
   position:absolute; inset:0; border-radius:50%;
   border:2px solid var(--brand);
