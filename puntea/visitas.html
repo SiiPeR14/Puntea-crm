@@ -86,10 +86,6 @@ function abrirDetalle(v) {
       <div class="kv"><span class="k">Tarjetas</span><span class="v">${v.NumTarjetas || "—"}</span></div>
       <div class="kv"><span class="k">Importe</span><span class="v">${fmtMoney(v.Importe)}</span></div>
       <div class="kv"><span class="k">Pago</span><span class="v">${v.FormaPago || "—"}</span></div>
-      ${v.FotoURL ? `
-        <div class="section-title">Foto</div>
-        <a href="${v.FotoURL}" target="_blank"><img src="${v.FotoURL}" class="foto-thumb" style="width:100%; height:180px;" alt="Foto de la venta"></a>
-      ` : ""}
     ` : ""}
     ${v.Notas ? `<div class="section-title">Notas</div><p style="font-size:14px; line-height:1.5;">${escapeHtml(v.Notas)}</p>` : ""}
     ${v.Objeciones ? `<div class="section-title">Objeciones</div><p style="font-size:14px; line-height:1.5;">${escapeHtml(v.Objeciones)}</p>` : ""}
